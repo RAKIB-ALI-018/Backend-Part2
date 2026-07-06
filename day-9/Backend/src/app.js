@@ -1,12 +1,20 @@
 // server create
-
 const express = require("express")
-
 const app = express()
+
+const path = require('path') //new thing
+const cors = require("cors") //new thing
 const noteModel = require("./Models/notes.model")
+
+
+
+
 app.use(express.json()) //Middleware
-const cors = require("cors")
 app.use(cors())
+app.use(express.static("./public")) //new thing
+
+
+
 
 
 // POST /api/notes
@@ -61,6 +69,17 @@ app.patch("/api/notes/:id", async (req, res)=>{
     res.status(200).json({
         message:"Note updated Successfully."
     })
+})
+
+
+//middleware
+//Maan lo user ne wo api request ki jo 
+// humne create hi nahi hai toh 
+// ye middleware usse kuch response bhejega
+
+// console.log(__dirname)
+app.use('*name', (req, res)=>{ 
+    res.sendFile(path.join(__dirname, ".." , "/public/index.html"))   
 })
 
 module.exports = app
