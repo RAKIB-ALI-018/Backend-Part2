@@ -6,7 +6,7 @@ const crypto = require("crypto")
 const authRouter = express.Router()
 
 
-// /api/auth/register
+//POST /api/auth/register
 authRouter.post("/register", async (req, res) => {
     const { name, email, password } = req.body;
 
@@ -39,8 +39,23 @@ authRouter.post("/register", async (req, res) => {
 })
 // 
 
+//GET /api/auth/get-me
+authRouter.get("/get-me", async(req, res)=>{
+    const token = req.cookies.jwt_token
 
-//   /api/auth/protected
+    const decoded = jwt.verify(token, process.env.JWT_SECRET)
+
+    const user = await userModel.findById(decoded.id);
+
+    res.json({
+        name:user.name,
+        email:user.email
+    })
+    
+})
+
+
+//POST   /api/auth/protected
 authRouter.post("/protected", (req, res) => {
     console.log(req.cookies);
 
@@ -51,7 +66,7 @@ authRouter.post("/protected", (req, res) => {
 })
 
 
-//   /api/auth/login
+//POST   /api/auth/login
 authRouter.post("/login", async (req, res) => {
     const { email, password } = req.body
 
